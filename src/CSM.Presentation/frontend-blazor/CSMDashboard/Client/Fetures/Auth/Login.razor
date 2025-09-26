@@ -1,0 +1,42 @@
+﻿@page "/login"
+
+<EditForm Model="@loginModel" OnValidSubmit="HandleLogin">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label>Email</label>
+        <InputText @bind-Value="loginModel.Email" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label>Senha</label>
+        <InputText @bind-Value="loginModel.Password" type="password" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Entrar</button>
+
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <div class="alert alert-danger mt-3">@errorMessage</div>
+    }
+</EditForm>
+
+@using CSMDashboard.Client.Features.Auth
+@inject NavigationManager Navigation
+@inject AuthService AuthService
+
+@code {
+    private LoginDto loginModel = new();
+    private string errorMessage;
+
+    private async Task HandleLogin()
+    {
+        var success = await AuthService.LoginAsync(loginModel);
+
+        if (success)
+            Navigation.NavigateTo("/alertas");
+        else
+            errorMessage = "Credenciais inválidas.";
+    }
+}

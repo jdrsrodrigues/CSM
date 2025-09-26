@@ -1,0 +1,65 @@
+﻿@page "/alertas"
+@using System.Net.Http.Headers
+@using CSMDashboard.Client.Configuration
+@using CSMDashboard.Client.Features.Alertas
+@using CSMDashboard.Client.Features.Settings
+@using CSMDashboard.Client.Fetures.Settings
+@using CSMDashboard.Client.Services
+@using CSMDashboard.Shared.Models
+@inject HttpClient Http
+
+<h3>Meus Alertas</h3>
+
+@if (alertas == null)
+{
+    <p>Carregando...</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Ativo</th>
+                <th>Preço Alvo</th>
+                <th>Volume Mínimo</th>
+                <th>MACD</th>
+                <th>RSI</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var alerta in alertas)
+            {
+                <tr>
+                    <td>@alerta.Simbolo</td>
+                    <td>@alerta.PrecoAlvo</td>
+                    <td>@alerta.NivelVolume</td>
+                    <td>@alerta.NivelMacd</td>
+                    <td>@alerta.NivelRsi</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@inject AlertasService AlertasService
+@inject TokenService TokenService
+@inject NavigationManager Navigation
+
+@code {
+    private IEnumerable<Alerta> alertas;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var token = await TokenService.GetTokenAsync();
+
+        if (string.IsNullOrEmpty(token))
+        {
+            Navigation.NavigateTo("/login");
+            return;
+        }
+
+        alertas = await AlertasService.GetAlertasAsync(token);
+    }
+}
+
+
