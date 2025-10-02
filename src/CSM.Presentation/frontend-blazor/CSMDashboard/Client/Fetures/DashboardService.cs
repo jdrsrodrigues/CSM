@@ -1,4 +1,5 @@
 ﻿using CSMDashboard.Client.Features.Settings;
+using CSMDashboard.Shared.Models;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 

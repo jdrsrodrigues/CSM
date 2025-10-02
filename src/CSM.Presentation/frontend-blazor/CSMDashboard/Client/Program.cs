@@ -3,7 +3,9 @@ using CSMDashboard.Client.Configuration;
 using CSMDashboard.Client.Features.Alertas;
 using CSMDashboard.Client.Features.Auth;
 using CSMDashboard.Client.Features.Settings;
+using CSMDashboard.Client.Fetures.Auth;
 using CSMDashboard.Client.Services;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using System.Net.Http.Json;
@@ -21,10 +23,11 @@ builder.Services.AddScoped(sp =>
     return http.GetFromJsonAsync<AppSettings>("appsettings.json").Result;
 });
 
-
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<SettingsService>();
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthProvider>();
+builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped<AlertasService>();
 
 await builder.Build().RunAsync();

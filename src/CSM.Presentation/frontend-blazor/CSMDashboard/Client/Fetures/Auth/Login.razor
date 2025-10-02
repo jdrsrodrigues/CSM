@@ -1,4 +1,11 @@
 ﻿@page "/login"
+@using CSMDashboard.Client.Features.Auth
+@using CSMDashboard.Client.Services
+@using Microsoft.AspNetCore.Components.Authorization
+@inject NavigationManager Navigation
+@inject AuthService AuthService
+@inject TokenService TokenService
+@inject AuthenticationStateProvider AuthProvider
 
 <EditForm Model="@loginModel" OnValidSubmit="HandleLogin">
     <DataAnnotationsValidator />
@@ -22,9 +29,8 @@
     }
 </EditForm>
 
-@using CSMDashboard.Client.Features.Auth
-@inject NavigationManager Navigation
-@inject AuthService AuthService
+
+
 
 @code {
     private LoginDto loginModel = new();
@@ -32,11 +38,17 @@
 
     private async Task HandleLogin()
     {
-        var success = await AuthService.LoginAsync(loginModel);
+        var token = await AuthService.LoginAsync(loginModel);
 
-        if (success)
+        if (!string.IsNullOrEmpty(token))
+        {
+            await TokenService.SetTokenAsync(token);
+            ((CustomAuthProvider)AuthProvider).NotifyUserAuthentication(token);
             Navigation.NavigateTo("/alertas");
+        }
         else
+        {
             errorMessage = "Credenciais inválidas.";
+        }
     }
 }

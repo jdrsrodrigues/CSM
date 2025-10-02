@@ -10,10 +10,13 @@ public class TokenService
     {
         _js = js;
     }
-
     public async Task<string> GetTokenAsync()
     {
         return await _js.InvokeAsync<string>("sessionStorage.getItem", "authToken");
+    }
+    public async Task SetTokenAsync(string token)
+    {
+        await _js.InvokeVoidAsync("sessionStorage.setItem", "authToken", token);
     }
 
     public async Task RemoveTokenAsync()

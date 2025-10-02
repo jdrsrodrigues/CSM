@@ -19,16 +19,16 @@ public class AuthService
         _settings = settings;
     }
 
-    public async Task<bool> LoginAsync(LoginDto loginDto)
+    public async Task<string> LoginAsync(LoginDto loginDto)
     {
-        var response = await _http.PostAsJsonAsync($"{_settings.GetApiBaseUrl()}/auth/login", loginDto);
+        var url = $"{_settings.GetApiBaseUrl()}/auth/login";
+        var response = await _http.PostAsJsonAsync(url, loginDto);
 
         if (!response.IsSuccessStatusCode)
-            return false;
+            return null;
 
         var result = await response.Content.ReadFromJsonAsync<TokenResponse>();
-        await _js.InvokeVoidAsync("sessionStorage.setItem", "authToken", result.Token);
-        return true;
+        return result?.Token;
     }
 
     private class TokenResponse

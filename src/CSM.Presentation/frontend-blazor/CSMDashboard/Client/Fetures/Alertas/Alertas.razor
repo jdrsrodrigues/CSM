@@ -3,10 +3,12 @@
 @using CSMDashboard.Client.Configuration
 @using CSMDashboard.Client.Features.Alertas
 @using CSMDashboard.Client.Features.Settings
-@using CSMDashboard.Client.Fetures.Settings
 @using CSMDashboard.Client.Services
 @using CSMDashboard.Shared.Models
+@using Microsoft.AspNetCore.Authorization
 @inject HttpClient Http
+
+@attribute [Authorize]
 
 <h3>Meus Alertas</h3>
 
